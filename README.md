@@ -1,5 +1,6 @@
 # triolog
 Programming Language and Compiler for Modeling Math Questions
+- The project works on [Heroku server](https://triologco.herokuapp.com/)
 
 ## Getting Started
 
