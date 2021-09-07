@@ -1,6 +1,8 @@
 # triolog
+
 Programming Language and Compiler for Modeling Math Questions
-- The project works on [Heroku server](https://triologco.herokuapp.com/)
+
+-   The project works on [Heroku server](https://triologco.herokuapp.com/)
 
 ## Getting Started
 
@@ -14,7 +16,8 @@ First, need to install [Node.js](https://nodejs.org/en/download/) and [React.js]
    # or
 >> yarn start
 ```
-- Then go to [localhost:3000](http://localhost:3000)
+
+-   Then go to [localhost:3000](http://localhost:3000)
 
 ### Or
 
@@ -26,6 +29,7 @@ Another way; run with docker container;
 ```
 
 Can list all docker containers with;
+
 ```
     docker ps -a
 ```
