@@ -9,7 +9,7 @@ COPY . /app/
 # install dependencies
 RUN npm install
 
-ENV PORT 5050
+ENV PORT 7777
 ARG DOCKER_ENV
 
 ENV NODE_ENV=${DOCKER_ENV}

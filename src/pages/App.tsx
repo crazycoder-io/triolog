@@ -1,6 +1,6 @@
 import React from "react";
 import {Grid, Toolbar, AppBar, ButtonGroup, Button} from "@material-ui/core";
-import "./App.css";
+import "../styles/App.css";
 
 function App() {
     return (
