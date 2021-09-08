@@ -16,7 +16,13 @@
 .workPanel .listPanel {
     display: flex;
     padding: 5px;
-    justify-content: center;
+    align-items: center;
+}
+
+.list {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
     align-items: center;
 }
 

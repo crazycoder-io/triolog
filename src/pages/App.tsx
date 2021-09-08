@@ -1,8 +1,40 @@
 import React from "react";
-import {Grid, Toolbar, AppBar, ButtonGroup, Button} from "@material-ui/core";
+import {
+    Grid,
+    Toolbar,
+    AppBar,
+    ButtonGroup,
+    Button,
+    List,
+    ListItemText,
+    ListItem,
+    CircularProgress,
+} from "@material-ui/core";
+import firebase from "../firebase";
 import "../styles/App.css";
 
+const db = firebase.default.firestore();
+
 function App() {
+    const [subjectList, setSubjectList] = React.useState<Array<{id: string; subject: string}> | []>([]);
+    const [listLoading, setListLoading] = React.useState<boolean>(false);
+    React.useEffect(() => {
+        async function getSubjects() {
+            setListLoading(true);
+            const subjects = await db.collection("subjects").get();
+            subjects.forEach(doc => {
+                if (!subjectList.some(d => d.id === doc.id)) {
+                    setSubjectList(prev => [...prev, {id: doc.id, subject: doc.data().subject}]);
+                }
+            });
+            setListLoading(false);
+        }
+
+        getSubjects();
+    }, []);
+
+    console.log(subjectList);
+
     return (
         <div className="container">
             {/* <Head>
@@ -37,7 +69,21 @@ function App() {
                 </Grid>
                 <Grid container className="workPanel">
                     <Grid item md={2} className="listPanel">
-                        List Panel
+                        <List component="data" aria-label="primary" className="list">
+                            {listLoading && <CircularProgress />}
+                            {subjectList.length > 0 &&
+                                subjectList.map(subject => (
+                                    <ListItem color="blue" button key={subject.id}>
+                                        <ListItemText color="red" primary={subject.subject} />
+                                    </ListItem>
+                                ))}
+                            {/* <ListItem button>
+                                <ListItemText primary="Trash" />
+                            </ListItem>
+                            <ListItem button>
+                                <ListItemText primary="Spam" />
+                            </ListItem> */}
+                        </List>
                     </Grid>
                     <Grid container direction="column" md={8}>
                         <Grid item className="designPanel">
