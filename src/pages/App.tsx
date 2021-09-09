@@ -11,7 +11,7 @@ import {
     CircularProgress,
 } from "@material-ui/core";
 import firebase from "../firebase";
-import {Tool} from "../components";
+import {Tool, LogPanel} from "../components";
 import "../styles/App.css";
 
 const db = firebase.default.firestore();
@@ -123,8 +123,8 @@ function App() {
                                 ))}
                             </div>
                         </Grid>
-                        <Grid item className="errorPanel">
-                            Error Panel
+                        <Grid item className="logPanel">
+                            <LogPanel />
                         </Grid>
                     </Grid>
                     <Grid item md={2} className="toolPanel">
