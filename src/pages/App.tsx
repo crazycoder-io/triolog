@@ -31,19 +31,20 @@ function App() {
             text: "tes3",
         },
     ]);
-    const [work, setWork] = React.useState<Array<{text: string}>>([]);
+    const [work, setWork] = React.useState<
+        Array<{text: string; offset: {x: number | undefined; y: number | undefined}}>
+    >([]);
 
-    // const [, addToWorkPanel] = useDrop(() => ({
-    //     accept: "tools",
-    // }));
-
-    // const [, createClone] = useDrop(() => ({
-    //     accept: "design",
-    // }));
-
-    const moveTool = (item: {text: string}) => {
+    const addTool = (item: {text: string}, offset: {x: number | undefined; y: number | undefined}) => {
         if (item && item.text !== "") {
-            setWork(prev => [...prev, item]);
+            setWork(prev => [...prev, {text: item.text, offset}]);
+        }
+    };
+
+    const moveTool = (item: {text: string}, offset: {x: number | undefined; y: number | undefined}) => {
+        if (item && item.text !== "") {
+            const newItemList = work.filter(t => t.text !== item.text);
+            setWork([...newItemList, {text: item.text, offset}]);
         }
     };
 
@@ -106,11 +107,19 @@ function App() {
                                 ))}
                         </List>
                     </Grid>
-                    <Grid container direction="column" md={8}>
+                    <Grid item container direction="column" md={8}>
                         <Grid item className="designPanel">
                             <div className="workField">
                                 {work.map(item => (
-                                    <Tool key={item.text} item={item} onDrop={moveTool} />
+                                    <div
+                                        key={item.text + new Date().toUTCString()}
+                                        style={{
+                                            position: item.offset.x ? "absolute" : "initial",
+                                            left: item.offset.x ? item.offset.x + "px" : "",
+                                            top: item.offset.y ? item.offset.y + "px" : "",
+                                        }}>
+                                        <Tool item={item} onDrop={moveTool} />
+                                    </div>
                                 ))}
                             </div>
                         </Grid>
@@ -121,7 +130,7 @@ function App() {
                     <Grid item md={2} className="toolPanel">
                         <ul>
                             {tools.map(item => (
-                                <Tool key={item.text} item={item} onDrop={moveTool} />
+                                <Tool key={item.text} item={item} onDrop={addTool} />
                             ))}
                         </ul>
                     </Grid>
