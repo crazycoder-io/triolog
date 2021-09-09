@@ -11,6 +11,7 @@ import {
     CircularProgress,
 } from "@material-ui/core";
 import firebase from "../firebase";
+import {Tool} from "../components";
 import "../styles/App.css";
 
 const db = firebase.default.firestore();
@@ -18,6 +19,34 @@ const db = firebase.default.firestore();
 function App() {
     const [subjectList, setSubjectList] = React.useState<Array<{id: string; subject: string}> | []>([]);
     const [listLoading, setListLoading] = React.useState<boolean>(false);
+
+    const [tools] = React.useState([
+        {
+            text: "test1",
+        },
+        {
+            text: "test2",
+        },
+        {
+            text: "tes3",
+        },
+    ]);
+    const [work, setWork] = React.useState<Array<{text: string}>>([]);
+
+    // const [, addToWorkPanel] = useDrop(() => ({
+    //     accept: "tools",
+    // }));
+
+    // const [, createClone] = useDrop(() => ({
+    //     accept: "design",
+    // }));
+
+    const moveTool = (item: {text: string}) => {
+        if (item && item.text !== "") {
+            setWork(prev => [...prev, item]);
+        }
+    };
+
     React.useEffect(() => {
         async function getSubjects() {
             setListLoading(true);
@@ -32,8 +61,6 @@ function App() {
 
         getSubjects();
     }, []);
-
-    console.log(subjectList);
 
     return (
         <div className="container">
@@ -77,24 +104,26 @@ function App() {
                                         <ListItemText color="red" primary={subject.subject} />
                                     </ListItem>
                                 ))}
-                            {/* <ListItem button>
-                                <ListItemText primary="Trash" />
-                            </ListItem>
-                            <ListItem button>
-                                <ListItemText primary="Spam" />
-                            </ListItem> */}
                         </List>
                     </Grid>
                     <Grid container direction="column" md={8}>
                         <Grid item className="designPanel">
-                            Design Panel
+                            <div className="workField">
+                                {work.map(item => (
+                                    <Tool key={item.text} item={item} onDrop={moveTool} />
+                                ))}
+                            </div>
                         </Grid>
                         <Grid item className="errorPanel">
                             Error Panel
                         </Grid>
                     </Grid>
                     <Grid item md={2} className="toolPanel">
-                        Tool Panel
+                        <ul>
+                            {tools.map(item => (
+                                <Tool key={item.text} item={item} onDrop={moveTool} />
+                            ))}
+                        </ul>
                     </Grid>
                 </Grid>
             </Grid>
