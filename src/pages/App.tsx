@@ -1,17 +1,7 @@
 import React from "react";
-import {
-    Grid,
-    Toolbar,
-    AppBar,
-    ButtonGroup,
-    Button,
-    List,
-    ListItemText,
-    ListItem,
-    CircularProgress,
-} from "@material-ui/core";
+import {Grid, List, ListItemText, ListItem, CircularProgress} from "@material-ui/core";
 import firebase from "../firebase";
-import {Tool, LogPanel} from "../components";
+import {Tool, LogPanel, NavBar} from "../components";
 import "../styles/App.css";
 
 const db = firebase.default.firestore();
@@ -76,24 +66,7 @@ function App() {
 
             <Grid container>
                 <Grid item xs={12}>
-                    <AppBar position="static">
-                        <Toolbar variant="dense">
-                            <ButtonGroup variant="text" aria-label="small outlined button group">
-                                <Button size="small" variant="contained">
-                                    File
-                                </Button>
-                                <Button size="small" variant="contained">
-                                    Window
-                                </Button>
-                                <Button size="small" variant="contained">
-                                    Edit
-                                </Button>
-                                <Button size="small" variant="contained">
-                                    Navigation
-                                </Button>
-                            </ButtonGroup>
-                        </Toolbar>
-                    </AppBar>
+                    <NavBar />
                 </Grid>
                 <Grid container className="workPanel">
                     <Grid item md={2} className="listPanel">
