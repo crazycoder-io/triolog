@@ -9,6 +9,7 @@ const db = firebase.default.firestore();
 function App() {
     const [subjectList, setSubjectList] = React.useState<Array<{id: string; subject: string}> | []>([]);
     const [listLoading, setListLoading] = React.useState<boolean>(false);
+    const [logs, setLogs] = React.useState<Array<{title: string; message: string; time: string}>>([]);
 
     const [tools] = React.useState([
         {
@@ -28,6 +29,10 @@ function App() {
     const addTool = (item: {text: string}, offset: {x: number | undefined; y: number | undefined}) => {
         if (item && item.text !== "") {
             setWork(prev => [...prev, {text: item.text, offset}]);
+            setLogs(prev => [
+                ...prev,
+                {title: "New Tool", message: "Added new tool - " + item.text, time: new Date().toUTCString()},
+            ]);
         }
     };
 
@@ -35,6 +40,14 @@ function App() {
         if (item && item.text !== "") {
             const newItemList = work.filter(t => t.text !== item.text);
             setWork([...newItemList, {text: item.text, offset}]);
+            setLogs(prev => [
+                ...prev,
+                {
+                    title: "Move Tool",
+                    message: item.text + " moved to X:" + offset.x + " Y:" + offset.y,
+                    time: new Date().toUTCString(),
+                },
+            ]);
         }
     };
 
@@ -101,7 +114,7 @@ function App() {
                             </div>
                         </Grid>
                         <Grid item className="logPanel">
-                            <LogPanel />
+                            <LogPanel logs={logs} />
                         </Grid>
                     </Grid>
                     <Grid item md={2} className="toolPanel">

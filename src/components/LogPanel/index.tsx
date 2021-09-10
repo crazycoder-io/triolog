@@ -1,7 +1,7 @@
 import React from "react";
 import "./style.css";
 
-function LogPanel() {
+const LogPanel = ({logs}: {logs: Array<{title: string; message: string; time: string}>}) => {
     return (
         <table className="table">
             <thead>
@@ -19,13 +19,20 @@ function LogPanel() {
             </thead>
             <tbody className="tBody">
                 <tr className="tableRow">
-                    <td className="tableColumn">Test Log Title</td>
-                    <td className="tableColumn">Test Log Message</td>
+                    <td className="tableColumn">Project Started</td>
+                    <td className="tableColumn">-</td>
                     <td className="tableColumn">{new Date().toUTCString()}</td>
                 </tr>
+                {logs.map(log => (
+                    <tr className="tableRow" key={log.time}>
+                        <td className="tableColumn">{log.title}</td>
+                        <td className="tableColumn">{log.message}</td>
+                        <td className="tableColumn">{log.time}</td>
+                    </tr>
+                ))}
             </tbody>
         </table>
     );
-}
+};
 
 export default LogPanel;
