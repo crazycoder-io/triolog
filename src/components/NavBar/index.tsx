@@ -9,20 +9,20 @@ function NavBar() {
             <Toolbar variant="dense" className="toolbar">
                 <ButtonGroup variant="text" aria-label="small outlined button group">
                     <Button size="small" variant="contained">
-                        File
+                        <span className="nav-button-text">File</span>
                     </Button>
                     <Button size="small" variant="contained">
-                        Window
+                        <span className="nav-button-text">Window</span>
                     </Button>
                     <Button size="small" variant="contained">
-                        Edit
+                        <span className="nav-button-text">Edit</span>
                     </Button>
                     <Button size="small" variant="contained">
-                        Navigation
+                        <span className="nav-button-text">Navigation</span>
                     </Button>
                 </ButtonGroup>
                 <Button onClick={() => alert("Run function")}>
-                    <PlayArrow style={{color: "#FFF"}} />
+                    <PlayArrow className="run-button" />
                 </Button>
             </Toolbar>
         </AppBar>

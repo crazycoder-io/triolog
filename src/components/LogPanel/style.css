@@ -30,6 +30,7 @@
 .headerColumn {
     flex: 1 1 20%;
     text-align: center;
+    font-family: "Signika Negative", sans-serif;
 }
 .headerColumn {
     text-transform: uppercase;
@@ -42,6 +43,7 @@
     display: inline-block;
     padding-left: 24px;
     padding-right: 24px;
+    font-family: "Signika Negative", sans-serif;
 }
 .headerText::after {
     content: "";

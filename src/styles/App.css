@@ -26,6 +26,16 @@
     align-items: center;
 }
 
+.list-item-text > span {
+    font-family: "Signika Negative", sans-serif !important;
+}
+.list-item {
+    border-radius: 25px !important;
+}
+.list-item:hover {
+    background-color: rgba(63, 81, 181, 0.2) !important;
+}
+
 .workPanel .designPanel {
     display: flex;
     flex: 3;

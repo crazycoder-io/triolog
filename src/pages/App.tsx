@@ -12,13 +12,13 @@ function App() {
 
     const [tools] = React.useState([
         {
-            text: "test1",
+            text: "testComponent1",
         },
         {
-            text: "test2",
+            text: "testComponent2",
         },
         {
-            text: "tes3",
+            text: "testComponent3",
         },
     ]);
     const [work, setWork] = React.useState<
@@ -74,8 +74,12 @@ function App() {
                             {listLoading && <CircularProgress />}
                             {subjectList.length > 0 &&
                                 subjectList.map(subject => (
-                                    <ListItem color="blue" button key={subject.id}>
-                                        <ListItemText color="red" primary={subject.subject} />
+                                    <ListItem button key={subject.id} className="list-item">
+                                        <ListItemText
+                                            className="list-item-text"
+                                            color="black"
+                                            primary={subject.subject}
+                                        />
                                     </ListItem>
                                 ))}
                         </List>
