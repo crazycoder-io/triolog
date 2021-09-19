@@ -1,7 +1,8 @@
 import React from "react";
 import {Grid, List, ListItemText, ListItem, CircularProgress} from "@material-ui/core";
 import firebase from "../firebase";
-import {Tool, LogPanel, NavBar} from "../components";
+import {Tool, LogPanel, NavBar, Collection} from "../components";
+import types from "../types/DNDTypes";
 import "../styles/App.css";
 
 const db = firebase.default.firestore();
@@ -11,40 +12,53 @@ function App() {
     const [listLoading, setListLoading] = React.useState<boolean>(false);
     const [logs, setLogs] = React.useState<Array<{title: string; message: string; time: string}>>([]);
 
-    const [tools] = React.useState([
-        {
-            text: "testComponent1",
-        },
-        {
-            text: "testComponent2",
-        },
-        {
-            text: "testComponent3",
-        },
-    ]);
-    const [work, setWork] = React.useState<
-        Array<{text: string; offset: {x: number | undefined; y: number | undefined}}>
+    const [workplace, setWorkplace] = React.useState<
+        Array<{
+            key: string;
+            type: string;
+            Component: JSX.Element;
+            offset: {x: number | undefined; y: number | undefined};
+        }>
     >([]);
 
-    const addTool = (item: {text: string}, offset: {x: number | undefined; y: number | undefined}) => {
-        if (item && item.text !== "") {
-            setWork(prev => [...prev, {text: item.text, offset}]);
+    const addTool = (
+        item: {key: string; type: string; Component: JSX.Element},
+        offset: {x: number | undefined; y: number | undefined}
+    ) => {
+        if (item && item.key !== "") {
+            setWorkplace(prev => [...prev, {key: item.key, type: item.type, Component: item.Component, offset}]);
             setLogs(prev => [
                 ...prev,
-                {title: "New Tool", message: "Added new tool - " + item.text, time: new Date().toUTCString()},
+                {title: "New Tool", message: "Added new tool - " + item.key, time: new Date().toUTCString()},
             ]);
         }
     };
 
-    const moveTool = (item: {text: string}, offset: {x: number | undefined; y: number | undefined}) => {
-        if (item && item.text !== "") {
-            const newItemList = work.filter(t => t.text !== item.text);
-            setWork([...newItemList, {text: item.text, offset}]);
+    const [tools] = React.useState([
+        {
+            key: new Date().getTime().toString(),
+            type: types.COLLECTION_COMPONENT,
+            Component: <Collection disabled={true} />,
+        },
+        {
+            key: (new Date().getTime() + 1).toString(),
+            type: types.COLLECTION_COMPONENT,
+            Component: <Collection disabled={true} />,
+        },
+    ]);
+
+    const moveTool = (
+        item: {key: string; type: string; Component: JSX.Element},
+        offset: {x: number | undefined; y: number | undefined}
+    ) => {
+        if (item && item.key !== "") {
+            const newItemList = workplace.filter(t => t.key !== item.key);
+            setWorkplace([...newItemList, {key: item.key, type: item.type, Component: item.Component, offset}]);
             setLogs(prev => [
                 ...prev,
                 {
                     title: "Move Tool",
-                    message: item.text + " moved to X:" + offset.x + " Y:" + offset.y,
+                    message: item.key + " moved to X:" + offset.x + " Y:" + offset.y,
                     time: new Date().toUTCString(),
                 },
             ]);
@@ -100,9 +114,9 @@ function App() {
                     <Grid item container direction="column" md={8}>
                         <Grid item className="designPanel">
                             <div className="workField">
-                                {work.map(item => (
+                                {workplace.map(item => (
                                     <div
-                                        key={item.text + new Date().toUTCString()}
+                                        key={item.key + new Date().toUTCString()}
                                         style={{
                                             position: item.offset.x ? "absolute" : "initial",
                                             left: item.offset.x ? item.offset.x + "px" : "",
@@ -119,8 +133,8 @@ function App() {
                     </Grid>
                     <Grid item md={2} className="toolPanel">
                         <ul>
-                            {tools.map(item => (
-                                <Tool key={item.text} item={item} onDrop={addTool} />
+                            {tools.map(({Component, type, key}, index) => (
+                                <Tool key={index} onDrop={addTool} item={{type, key, Component}} />
                             ))}
                         </ul>
                     </Grid>
