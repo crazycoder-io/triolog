@@ -2,9 +2,13 @@ import React, {useState} from "react";
 import {Input, Grid} from "@material-ui/core";
 import Add from "@material-ui/icons/Add";
 
-const Collection = (props: {disabled: boolean | undefined}) => {
-    const {disabled = true} = props;
+const Collection = () => {
     const [numbers, setNumbers] = useState([0, 0]);
+    const onChange = (index: number, val: any) => {
+        const newNumbers = [...numbers];
+        newNumbers[index] = val.target.value;
+        setNumbers(newNumbers);
+    };
 
     return (
         <Grid container direction="row" justifyContent="flex-start" alignItems="center">
@@ -13,11 +17,9 @@ const Collection = (props: {disabled: boolean | undefined}) => {
                     <Input
                         key={index}
                         id="nums"
-                        value={num}
-                        disabled={disabled}
-                        defaultValue={""}
+                        defaultValue={0}
                         style={{width: "10%", border: "1px dotted #000"}}
-                        onChange={val => setNumbers([...numbers, parseFloat(val.target.value)])}
+                        onChange={(val: any) => onChange(index, val)}
                     />
                     {numbers.length > index + 1 && <Add />}
                 </>
