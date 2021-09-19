@@ -5,14 +5,17 @@ const Tool = ({
     item,
     onDrop,
 }: {
-    item: {text: string};
-    onDrop: (item: {text: string}, offset: {x: number | undefined; y: number | undefined}) => void;
+    item: {key: string; type: string; Component: JSX.Element};
+    onDrop: (
+        item: {type: string; Component: JSX.Element; key: string},
+        offset: {x: number | undefined; y: number | undefined}
+    ) => void;
 }) => {
-    const {text} = item;
+    const {type, key, Component} = item;
 
     const [{isDragging}, dragRef] = useDrag(() => ({
-        type: item.text,
-        item: {text},
+        type: type,
+        item: {type, Component, key},
         collect: monitor => ({
             isDragging: monitor.isDragging(),
         }),
@@ -27,7 +30,7 @@ const Tool = ({
             style={{
                 opacity: isDragging ? 0.5 : 1,
             }}>
-            {item.text}
+            {Component && Component}
         </div>
     );
 };
