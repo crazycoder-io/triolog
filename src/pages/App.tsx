@@ -1,4 +1,4 @@
-import React, {useEffect} from "react";
+import React, {useEffect, useState} from "react";
 import {Grid, List, ListItemText, ListItem, CircularProgress} from "@material-ui/core";
 import {useDispatch, useSelector} from "react-redux";
 import firebase from "../firebase";
@@ -13,9 +13,9 @@ const db = firebase.default.firestore();
 
 function App() {
     const dispatch = useDispatch();
-    const [subjectList, setSubjectList] = React.useState<Array<{id: string; subject: string}> | []>([]);
-    const [listLoading, setListLoading] = React.useState<boolean>(false);
-    const [logs, setLogs] = React.useState<Array<{title: string; message: string; time: string}>>([]);
+    const [subjectList, setSubjectList] = useState<Array<{id: string; subject: string}> | []>([]);
+    const [listLoading, setListLoading] = useState<boolean>(false);
+    const [logs, setLogs] = useState<Array<{title: string; message: string; time: string}>>([]);
 
     const toolsProps = useSelector((state: ToolsReducerState) => state.toolsReducer);
     const {tools, workPlace} = toolsProps;
@@ -57,7 +57,7 @@ function App() {
         }
     };
 
-    React.useEffect(() => {
+    useEffect(() => {
         async function getSubjects() {
             setListLoading(true);
             const subjects = await db.collection("subjects").get();
