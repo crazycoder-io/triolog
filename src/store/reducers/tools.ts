@@ -3,7 +3,12 @@ import updateWorkPlace from "../../utils/UpdateWorkPlaceState";
 
 const INITIAL_STATE = {
     workPlace: [],
-    tools: [],
+    toolList: [
+        {
+            title: null,
+            items: [],
+        },
+    ],
 };
 
 export default (state = INITIAL_STATE, action: any) => {
@@ -13,7 +18,7 @@ export default (state = INITIAL_STATE, action: any) => {
         case FILL_TOOL_LIST:
             return {
                 ...state,
-                tools: payload,
+                toolList: payload,
             };
         case ADD_TO_WORK_PANEL:
             return {
