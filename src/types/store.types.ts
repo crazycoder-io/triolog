@@ -1,10 +1,14 @@
-export type ToolItem = {
+export type ItemOfToolList = {
     type: string;
     Component: JSX.Element;
 };
-export type ListPayload = Array<ToolItem>;
+export type UnitOfToolList = {
+    title: string;
+    items: Array<ItemOfToolList>;
+};
+export type ToolList = Array<UnitOfToolList>;
 
-export interface AddToolItem extends ToolItem {
+export interface ToolItem extends ItemOfToolList {
     key?: string;
     offset: {
         x: number;
@@ -14,11 +18,11 @@ export interface AddToolItem extends ToolItem {
 
 export interface ToolsReducerState {
     toolsReducer: {
-        tools: ListPayload;
-        workPlace: Array<AddToolItem>;
+        toolList: ToolList;
+        workPlace: Array<ToolItem>;
     };
 }
 
 export interface UpdateWorkPlaceState {
-    workPlace: Array<AddToolItem>;
+    workPlace: Array<ToolItem>;
 }
