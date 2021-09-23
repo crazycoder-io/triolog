@@ -1,14 +1,13 @@
 import React, {useEffect, useState} from "react";
-import {Grid, List, ListItemText, ListItem, CircularProgress} from "@material-ui/core";
+import {Grid, List, ListItemText, ListItem} from "@material-ui/core";
 import {useDispatch, useSelector} from "react-redux";
-import CompareArrowsIcon from "@material-ui/icons/CompareArrows";
 import {SolarSystemLoading} from "react-loadingg";
 import firebase from "../firebase";
-import {Tool, LogPanel, NavBar, Collection} from "../components";
+import {Tool, LogPanel, NavBar} from "../components";
 import types from "../types/DNDTypes";
-import {ToolsReducerState} from "../types/store.types";
+import {Offset, ToolsReducerState, WorkSpaceToolItem} from "../types/store.types";
 import {fillToolList, addToWorkPanel, moveItemOnWorkPanel} from "../store/actions/tools";
-import GenerateKey from "../utils/GenerateKey";
+import {GenerateKey, fillToToolList} from "../utils";
 import store from "../store";
 import "../styles/App.css";
 
@@ -26,7 +25,7 @@ function App() {
     const toolsReducer = useSelector((state: ToolsReducerState) => state.toolsReducer);
     const {toolList, workPlace} = toolsReducer;
 
-    const addTool = (item: {key?: string; type: string; Component: JSX.Element}, offset: {x: number; y: number}) => {
+    const addTool = (item: WorkSpaceToolItem, offset: Offset) => {
         if (item && item.type !== "") {
             if (item.type === types.ARROW_TOOL) {
                 const {toolsReducer: toolsProps} = store.getState();
@@ -51,31 +50,10 @@ function App() {
     };
 
     useEffect(() => {
-        dispatch(
-            fillToolList([
-                {
-                    title: "Ortak Araçlar",
-                    items: [
-                        {
-                            type: types.ARROW_TOOL,
-                            Component: <CompareArrowsIcon />,
-                        },
-                    ],
-                },
-                {
-                    title: "Hesaplama Araçları",
-                    items: [
-                        {
-                            type: types.COLLECTION_COMPONENT,
-                            Component: <Collection />,
-                        },
-                    ],
-                },
-            ])
-        );
+        dispatch(fillToolList(fillToToolList()));
     }, []);
 
-    const moveTool = (item: {key?: string; type: string; Component: JSX.Element}, offset: {x: number; y: number}) => {
+    const moveTool = (item: WorkSpaceToolItem, offset: Offset) => {
         if (item && item.key !== "") {
             dispatch(moveItemOnWorkPanel({...item, offset}));
             setLogs(prev => [
@@ -157,11 +135,7 @@ function App() {
                                                 />
                                                 {arrows.length > 0 &&
                                                     arrows.map(({start, end}, index) => (
-                                                        <Xarrow
-                                                            key={index}
-                                                            start={start} //can be react ref
-                                                            end={end} //or an id
-                                                        />
+                                                        <Xarrow key={index} start={start} end={end} />
                                                     ))}
                                             </>
                                         ))}

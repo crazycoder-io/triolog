@@ -1,5 +1,6 @@
 import React from "react";
 import {useDrag} from "react-dnd";
+import {Offset, WorkSpaceToolItem} from "../types/store.types";
 
 const Tool = ({
     id,
@@ -9,8 +10,8 @@ const Tool = ({
     style,
 }: {
     id: string;
-    item: {key?: string; type: string; Component: JSX.Element};
-    onDrop: (item: {type: string; Component: JSX.Element; key?: string}, offset: {x: number; y: number}) => void;
+    item: WorkSpaceToolItem;
+    onDrop: (item: WorkSpaceToolItem, offset: Offset) => void;
     disabled: boolean;
     style?: React.CSSProperties;
 }) => {

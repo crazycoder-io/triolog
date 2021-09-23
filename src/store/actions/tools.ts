@@ -1,7 +1,7 @@
 import {FILL_TOOL_LIST, ADD_TO_WORK_PANEL, MOVE_ITEM_ON_WORK_PANEL} from "../types";
-import {ToolList, ToolItem} from "../../types/store.types";
+import {ToolListReducer, ToolItem} from "../../types/store.types";
 
-export const fillToolList = (payload: ToolList) => ({
+export const fillToolList = (payload: ToolListReducer) => ({
     type: FILL_TOOL_LIST,
     payload,
 });
