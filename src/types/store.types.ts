@@ -32,3 +32,17 @@ export interface ToolsReducerState {
 export interface UpdateWorkPlaceState {
     workPlace: Array<ToolItem>;
 }
+
+export interface LogItem {
+    title: string;
+    message: string;
+    time: string;
+}
+
+export type LogPanel = Array<LogItem>;
+
+export interface LogReducerState {
+    logReducer: {
+        logs: LogPanel;
+    };
+}

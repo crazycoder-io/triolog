@@ -1,25 +1,28 @@
+// Import Packages
 import React, {useEffect, useState} from "react";
 import {Grid, List, ListItemText, ListItem} from "@material-ui/core";
 import {useDispatch, useSelector} from "react-redux";
 import {SolarSystemLoading} from "react-loadingg";
+import Xarrow from "react-xarrows";
+
+// Import Dependencies
 import firebase from "../firebase";
 import {Tool, LogPanel, NavBar} from "../components";
 import types from "../types/DNDTypes";
 import {Offset, ToolsReducerState, WorkSpaceToolItem} from "../types/store.types";
 import {fillToolList, addToWorkPanel, moveItemOnWorkPanel} from "../store/actions/tools";
+import {addNewLog} from "../store/actions/logPanel";
 import {GenerateKey, fillToToolList} from "../utils";
 import store from "../store";
 import "../styles/App.css";
 
-import Xarrow from "react-xarrows";
-
+// Get Firebase DB
 const db = firebase.default.firestore();
 
 function App() {
     const dispatch = useDispatch();
     const [subjectList, setSubjectList] = useState<Array<{id: string; subject: string}> | []>([]);
     const [listLoading, setListLoading] = useState<boolean>(false);
-    const [logs, setLogs] = useState<Array<{title: string; message: string; time: string}>>([]);
     const [arrows, setArrows] = useState<Array<{start: string; end: string}>>([]);
 
     const toolsReducer = useSelector((state: ToolsReducerState) => state.toolsReducer);
@@ -41,10 +44,9 @@ function App() {
             } else {
                 const key = GenerateKey();
                 dispatch(addToWorkPanel({key, type: item.type, Component: item.Component, offset}));
-                setLogs(prev => [
-                    ...prev,
-                    {title: "New Tool", message: "Added new tool - " + key, time: new Date().toUTCString()},
-                ]);
+                dispatch(
+                    addNewLog({title: "New Tool", message: "Added new tool - " + key, time: new Date().toUTCString()})
+                );
             }
         }
     };
@@ -56,14 +58,6 @@ function App() {
     const moveTool = (item: WorkSpaceToolItem, offset: Offset) => {
         if (item && item.key !== "") {
             dispatch(moveItemOnWorkPanel({...item, offset}));
-            setLogs(prev => [
-                ...prev,
-                {
-                    title: "Move Tool",
-                    message: item.key + " moved to X:" + offset.x + " Y:" + offset.y,
-                    time: new Date().toUTCString(),
-                },
-            ]);
         }
     };
 
@@ -142,7 +136,7 @@ function App() {
                                     </div>
                                 </Grid>
                                 <Grid item className="logPanel">
-                                    <LogPanel logs={logs} />
+                                    <LogPanel />
                                 </Grid>
                             </Grid>
                             <Grid item md={2} className="toolPanel">
