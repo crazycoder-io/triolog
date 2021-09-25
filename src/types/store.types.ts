@@ -46,3 +46,16 @@ export interface LogReducerState {
         logs: LogPanel;
     };
 }
+
+export interface ArrowItem {
+    start: string;
+    end: string;
+}
+
+export type Arrows = Array<ArrowItem>;
+
+export interface ArrowReducerState {
+    arrowReducer: {
+        arrows: Arrows;
+    };
+}
