@@ -17,7 +17,6 @@ const Collection = () => {
                 {numbers.map((num, index) => (
                     <>
                         <Input
-                            key={index}
                             className="collect-numbers"
                             value={num}
                             id={`collection_number-${index + 1}`}

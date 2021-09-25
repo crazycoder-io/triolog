@@ -1,7 +1,12 @@
 import React from "react";
+import {useSelector} from "react-redux";
+import {LogReducerState} from "../../types/store.types";
 import "./style.css";
 
-const LogPanel = ({logs}: {logs: Array<{title: string; message: string; time: string}>}) => {
+const LogPanel = () => {
+    const logReducer = useSelector((state: LogReducerState) => state.logReducer);
+    const {logs} = logReducer;
+
     return (
         <table className="table">
             <thead>
