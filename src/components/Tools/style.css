@@ -1,0 +1,27 @@
+.collection-container {
+    padding: 0;
+    margin: 0;
+    width: auto;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.collection-container .collect-numbers {
+    width: 30px !important;
+    border: "1px dotted #000";
+}
+
+.tool-name {
+    text-align: center;
+    font-family: "Signika Negative", sans-serif !important;
+}
+
+.collect-numbers input {
+    text-align: center;
+}
+
+.input-list {
+    display: flex;
+    flex-direction: row;
+}

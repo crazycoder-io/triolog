@@ -1,24 +1,61 @@
-export type ToolItem = {
+export type ItemOfToolList = {
     type: string;
     Component: JSX.Element;
 };
-export type ListPayload = Array<ToolItem>;
+export type ToolListReducerItem = {
+    title: string;
+    items: Array<ItemOfToolList>;
+};
+export type ToolListReducer = Array<ToolListReducerItem>;
 
-export interface AddToolItem extends ToolItem {
+export interface WorkSpaceToolItem extends ItemOfToolList {
     key?: string;
-    offset: {
-        x: number;
-        y: number;
-    };
+}
+
+export type Offset = {
+    x: number;
+    y: number;
+};
+
+export interface ToolItem extends ItemOfToolList {
+    key?: string;
+    offset: Offset;
 }
 
 export interface ToolsReducerState {
     toolsReducer: {
-        tools: ListPayload;
-        workPlace: Array<AddToolItem>;
+        toolList: ToolListReducer;
+        workPlace: Array<ToolItem>;
     };
 }
 
 export interface UpdateWorkPlaceState {
-    workPlace: Array<AddToolItem>;
+    workPlace: Array<ToolItem>;
+}
+
+export interface LogItem {
+    title: string;
+    message: string;
+    time: string;
+}
+
+export type LogPanel = Array<LogItem>;
+
+export interface LogReducerState {
+    logReducer: {
+        logs: LogPanel;
+    };
+}
+
+export interface ArrowItem {
+    start: string;
+    end: string;
+}
+
+export type Arrows = Array<ArrowItem>;
+
+export interface ArrowReducerState {
+    arrowReducer: {
+        arrows: Arrows;
+    };
 }

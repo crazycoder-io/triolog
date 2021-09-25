@@ -1,6 +1,6 @@
-import {AddToolItem, UpdateWorkPlaceState} from "../types/store.types";
+import {ToolItem, UpdateWorkPlaceState} from "../types/store.types";
 
-export default (state: UpdateWorkPlaceState, payload: AddToolItem) => {
-    const exceptList = state.workPlace.filter((t: AddToolItem) => t.key !== payload.key);
+export default (state: UpdateWorkPlaceState, payload: ToolItem) => {
+    const exceptList = state.workPlace.filter((t: ToolItem) => t.key !== payload.key);
     return [...exceptList, payload];
 };

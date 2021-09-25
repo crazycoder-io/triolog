@@ -1,63 +1,76 @@
-import React, {useEffect} from "react";
-import {Grid, List, ListItemText, ListItem, CircularProgress} from "@material-ui/core";
+// Import Packages
+import React, {useEffect, useState} from "react";
+import {Grid, List, ListItemText, ListItem} from "@material-ui/core";
 import {useDispatch, useSelector} from "react-redux";
+import {SolarSystemLoading} from "react-loadingg";
+import Xarrow from "react-xarrows";
+
+// Import Dependencies
 import firebase from "../firebase";
-import {Tool, LogPanel, NavBar, Collection} from "../components";
+import {Tool, LogPanel, NavBar} from "../components";
 import types from "../types/DNDTypes";
-import {ToolsReducerState} from "../types/store.types";
+import {ArrowReducerState, Offset, ToolsReducerState, WorkSpaceToolItem} from "../types/store.types";
 import {fillToolList, addToWorkPanel, moveItemOnWorkPanel} from "../store/actions/tools";
-import GenerateKey from "../utils/GenerateKey";
+import {addNewLog} from "../store/actions/logPanel";
+import {addNewArrow} from "../store/actions/arrows";
+import {GenerateKey, fillToToolList} from "../utils";
+import store from "../store";
 import "../styles/App.css";
 
+// Get Firebase DB
 const db = firebase.default.firestore();
 
 function App() {
     const dispatch = useDispatch();
-    const [subjectList, setSubjectList] = React.useState<Array<{id: string; subject: string}> | []>([]);
-    const [listLoading, setListLoading] = React.useState<boolean>(false);
-    const [logs, setLogs] = React.useState<Array<{title: string; message: string; time: string}>>([]);
+    const [subjectList, setSubjectList] = useState<Array<{id: string; subject: string}> | []>([]);
+    const [listLoading, setListLoading] = useState<boolean>(false);
 
-    const toolsProps = useSelector((state: ToolsReducerState) => state.toolsReducer);
-    const {tools, workPlace} = toolsProps;
+    const toolsReducer = useSelector((state: ToolsReducerState) => state.toolsReducer);
+    const {toolList, workPlace} = toolsReducer;
 
-    const addTool = (item: {key?: string; type: string; Component: JSX.Element}, offset: {x: number; y: number}) => {
+    const arrowReducer = useSelector((state: ArrowReducerState) => state.arrowReducer);
+    const {arrows} = arrowReducer;
+
+    const addTool = (item: WorkSpaceToolItem, offset: Offset) => {
         if (item && item.type !== "") {
-            const key = GenerateKey();
-            dispatch(addToWorkPanel({key, type: item.type, Component: item.Component, offset}));
-            // setWorkplace(prev => [...prev, {key: item.key, type: item.type, Component: item.Component, offset}]);
-            setLogs(prev => [
-                ...prev,
-                {title: "New Tool", message: "Added new tool - " + key, time: new Date().toUTCString()},
-            ]);
+            if (item.type === types.ARROW_TOOL) {
+                const output_item = prompt("Please write output item id/key (You can learn on log panel)");
+                const input_item = prompt("Please write input item id/key (You can learn on log panel)");
+
+                if (output_item && input_item) {
+                    const _toolsReducer = store.getState().toolsReducer as {workPlace: Array<WorkSpaceToolItem>};
+                    const output_item_check = (_toolsReducer.workPlace as Array<WorkSpaceToolItem>).findIndex(
+                        (w: WorkSpaceToolItem) => w.key === output_item
+                    );
+                    const input_item_check = (_toolsReducer.workPlace as Array<WorkSpaceToolItem>).findIndex(
+                        (w: WorkSpaceToolItem) => w.key === input_item
+                    );
+
+                    if (output_item_check === -1 || input_item_check === -1) {
+                        alert("Did not receive item ids correctly, please try again!");
+                    } else {
+                        dispatch(addNewArrow({start: output_item, end: input_item}));
+                    }
+                } else {
+                    alert("Did not receive item ids correctly, please try again!");
+                }
+            } else {
+                const key = GenerateKey();
+                dispatch(addToWorkPanel({key, type: item.type, Component: item.Component, offset}));
+                dispatch(
+                    addNewLog({title: "New Tool", message: "Added new tool - " + key, time: new Date().toUTCString()})
+                );
+            }
+        }
+    };
+
+    const moveTool = (item: WorkSpaceToolItem, offset: Offset) => {
+        if (item && item.key !== "") {
+            dispatch(moveItemOnWorkPanel({...item, offset}));
         }
     };
 
     useEffect(() => {
-        dispatch(
-            fillToolList([
-                {
-                    type: types.COLLECTION_COMPONENT,
-                    Component: <Collection />,
-                },
-            ])
-        );
-    }, []);
-
-    const moveTool = (item: {key?: string; type: string; Component: JSX.Element}, offset: {x: number; y: number}) => {
-        if (item && item.key !== "") {
-            dispatch(moveItemOnWorkPanel({...item, offset}));
-            setLogs(prev => [
-                ...prev,
-                {
-                    title: "Move Tool",
-                    message: item.key + " moved to X:" + offset.x + " Y:" + offset.y,
-                    time: new Date().toUTCString(),
-                },
-            ]);
-        }
-    };
-
-    React.useEffect(() => {
         async function getSubjects() {
             setListLoading(true);
             const subjects = await db.collection("subjects").get();
@@ -72,6 +85,10 @@ function App() {
         getSubjects();
     }, []);
 
+    useEffect(() => {
+        dispatch(fillToolList(fillToToolList()));
+    }, []);
+
     return (
         <div className="container">
             {/* <Head>
@@ -84,53 +101,78 @@ function App() {
             </Head> */}
 
             <Grid container>
-                <Grid item xs={12}>
-                    <NavBar />
-                </Grid>
-                <Grid container className="workPanel">
-                    <Grid item md={2} className="listPanel">
-                        <List component="data" aria-label="primary" className="list">
-                            {listLoading && <CircularProgress />}
-                            {subjectList.length > 0 &&
-                                subjectList.map(subject => (
-                                    <ListItem button key={subject.id} className="list-item">
-                                        <ListItemText
-                                            className="list-item-text"
-                                            color="black"
-                                            primary={subject.subject}
-                                        />
-                                    </ListItem>
-                                ))}
-                        </List>
-                    </Grid>
-                    <Grid item container direction="column" md={8}>
-                        <Grid item className="designPanel">
-                            <div className="workField">
-                                {workPlace.map(item => (
-                                    <div
-                                        key={item.key}
-                                        style={{
-                                            position: item.offset.x ? "absolute" : "initial",
-                                            left: item.offset.x ? item.offset.x + "px" : "",
-                                            top: item.offset.y ? item.offset.y + "px" : "",
-                                        }}>
-                                        <Tool disabled={false} item={item} onDrop={moveTool} />
+                {listLoading ? (
+                    <SolarSystemLoading />
+                ) : (
+                    <>
+                        <Grid item xs={12}>
+                            <NavBar />
+                        </Grid>
+                        <Grid container className="workPanel">
+                            <Grid item md={2} className="listPanel">
+                                <List component="data" aria-label="primary" className="list">
+                                    {subjectList.length > 0 &&
+                                        subjectList.map(subject => (
+                                            <ListItem button key={subject.id} className="list-item">
+                                                <ListItemText
+                                                    className="list-item-text"
+                                                    color="black"
+                                                    primary={subject.subject}
+                                                />
+                                            </ListItem>
+                                        ))}
+                                </List>
+                            </Grid>
+                            <Grid item container direction="column" md={8}>
+                                <Grid item className="designPanel">
+                                    <div className="workField">
+                                        {workPlace.map(item => (
+                                            <div key={item.key!}>
+                                                <Tool
+                                                    id={item.key!}
+                                                    disabled={false}
+                                                    item={item}
+                                                    onDrop={moveTool}
+                                                    style={{
+                                                        position: item.offset.x ? "absolute" : "initial",
+                                                        left: item.offset.x ? item.offset.x + "px" : "",
+                                                        top: item.offset.y ? item.offset.y + "px" : "",
+                                                    }}
+                                                />
+                                                {arrows.length > 0 &&
+                                                    arrows.map(({start, end}, index) => (
+                                                        <Xarrow key={index} start={start} end={end} />
+                                                    ))}
+                                            </div>
+                                        ))}
                                     </div>
+                                </Grid>
+                                <Grid item className="logPanel">
+                                    <LogPanel />
+                                </Grid>
+                            </Grid>
+                            <Grid item md={2} className="toolPanel">
+                                {toolList.map(({items, title}) => (
+                                    <>
+                                        <span className="tool-title">{title}</span>
+                                        <div className="tools">
+                                            {items.map(({Component, type}, index) => (
+                                                <Tool
+                                                    id={index.toString()}
+                                                    disabled={true}
+                                                    key={index}
+                                                    onDrop={addTool}
+                                                    item={{type, Component}}
+                                                />
+                                            ))}
+                                        </div>
+                                        <hr className="brace" />
+                                    </>
                                 ))}
-                            </div>
+                            </Grid>
                         </Grid>
-                        <Grid item className="logPanel">
-                            <LogPanel logs={logs} />
-                        </Grid>
-                    </Grid>
-                    <Grid item md={2} className="toolPanel">
-                        <ul>
-                            {tools.map(({Component, type}, index) => (
-                                <Tool disabled={true} key={index} onDrop={addTool} item={{type, Component}} />
-                            ))}
-                        </ul>
-                    </Grid>
-                </Grid>
+                    </>
+                )}
             </Grid>
         </div>
     );

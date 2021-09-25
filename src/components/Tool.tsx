@@ -1,14 +1,19 @@
 import React from "react";
 import {useDrag} from "react-dnd";
+import {Offset, WorkSpaceToolItem} from "../types/store.types";
 
 const Tool = ({
+    id,
     item,
     onDrop,
     disabled,
+    style,
 }: {
-    item: {key?: string; type: string; Component: JSX.Element};
-    onDrop: (item: {type: string; Component: JSX.Element; key?: string}, offset: {x: number; y: number}) => void;
+    id: string;
+    item: WorkSpaceToolItem;
+    onDrop: (item: WorkSpaceToolItem, offset: Offset) => void;
     disabled: boolean;
+    style?: React.CSSProperties;
 }) => {
     const {type, Component} = item;
 
@@ -24,12 +29,14 @@ const Tool = ({
     }));
 
     return (
-        <div
-            ref={dragRef}
-            style={{
-                opacity: isDragging ? 0.5 : 1,
-            }}>
-            <div style={{pointerEvents: disabled ? "none" : "all"}}>{Component && Component}</div>
+        <div ref={dragRef} id={id} style={{margin: "10px", opacity: isDragging ? 0.5 : 1, ...style}}>
+            <div
+                style={{
+                    pointerEvents: disabled ? "none" : "all",
+                    display: "inline-block",
+                }}>
+                {Component && Component}
+            </div>
         </div>
     );
 };

@@ -1,30 +1,39 @@
 import React, {useState} from "react";
-import {Input, Grid} from "@material-ui/core";
+import {Input} from "@material-ui/core";
 import Add from "@material-ui/icons/Add";
+import "./style.css";
 
 const Collection = () => {
     const [numbers, setNumbers] = useState([0, 0]);
-    const onChange = (index: number, val: any) => {
+    const onChange = (index: number, value: string) => {
         const newNumbers = [...numbers];
-        newNumbers[index] = val.target.value;
+        newNumbers[index] = value as unknown as number;
         setNumbers(newNumbers);
     };
 
     return (
-        <Grid container direction="row" justifyContent="flex-start" alignItems="center">
-            {numbers.map((num, index) => (
-                <>
-                    <Input
-                        key={index}
-                        id="nums"
-                        defaultValue={0}
-                        style={{width: "10%", border: "1px dotted #000"}}
-                        onChange={(val: any) => onChange(index, val)}
-                    />
-                    {numbers.length > index + 1 && <Add />}
-                </>
-            ))}
-        </Grid>
+        <div className="collection-container">
+            <div className="input-list">
+                {numbers.map((num, index) => (
+                    <>
+                        <Input
+                            className="collect-numbers"
+                            value={num}
+                            id={`collection_number-${index + 1}`}
+                            placeholder="0"
+                            style={{border: "1px dotted #000"}}
+                            onChange={(val: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+                                if (/^[0-9]+(\.[0-9]+)?$/.test(val.target.value)) {
+                                    onChange(index, val.target.value);
+                                }
+                            }}
+                        />
+                        {numbers.length > index + 1 && <Add style={{margin: "auto 0"}} />}
+                    </>
+                ))}
+            </div>
+            <span className="tool-name">Toplama</span>
+        </div>
     );
 };
 

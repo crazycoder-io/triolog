@@ -56,7 +56,24 @@
 
 .toolPanel {
     display: flex;
-    padding: 5px;
-    justify-content: center;
+    flex-direction: column;
+    padding: 8px;
     align-items: center;
+}
+
+.toolPanel .tools {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+}
+
+.toolPanel .tool-title {
+    font-size: 18px;
+    font-weight: 600;
+    margin: 10px 0;
+    font-family: "Kanit", sans-serif !important;
+}
+
+.brace {
+    width: 100%;
 }
